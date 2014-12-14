@@ -71,16 +71,8 @@ value for each of the other visible broadcast-mode buffers.")
 (defun broadcast-get-state ()
   "Collects relevant state about the buffer.  Used to detect if a command should
 be broadcast."
-  (list (buffer-modified-tick)
-        (point)
-        (mark)
-        mark-active
-        transient-mark-mode
-        rectangle-mark-mode
-        kill-ring
-        kill-ring-yank-pointer
-        ))
-
+  (list (buffer-modified-tick) (point) (mark) mark-active transient-mark-mode
+        rectangle-mark-mode kill-ring kill-ring-yank-pointer))
 
 (defun broadcast-pre ()
   "A `pre-command-hook' that is enabled for all broadcast mode buffers.  It 
@@ -105,7 +97,9 @@ window configuration."
              ;; It would be nice to support this but this is probably tricky
              (not isearch-mode)
              ;; don't broadcast anything that changes the window configuration
-             broadcast-window-configuration (compare-window-configurations broadcast-window-configuration (current-window-configuration))
+             broadcast-window-configuration
+             (compare-window-configurations broadcast-window-configuration
+                                            (current-window-configuration))
              ;; only broadcast when the state has changed
              (not (equal (broadcast-get-state) broadcast-state)))
         (broadcast-command
@@ -113,11 +107,13 @@ window configuration."
                (interprogram-cut-function nil))
            (condition-case err
                (progn
-                 (message "command is %s" real-this-command)
+                 ; (message "command is %s" real-this-command)
                  (run-hooks 'pre-command-hook)
                  (call-interactively real-this-command)
                  (run-hooks 'post-command-hook))
-             (error (message "%s in %s" (error-message-string err) (buffer-name buffer)))
+             (error (message "%s in %s"
+                             (error-message-string err)
+                             (buffer-name buffer)))
              (quit))))))))
 
 (defun broadcast-current-kill-advice (n &optional do-not-move)
@@ -180,7 +176,6 @@ variable is buffer local"
           (when (and window (not (eq buffer primary-buffer)))
             (with-selected-window window
               (when broadcast-mode
-                (message "broadcast-command to %s" window)
                 ,body)))))
       (buffer-list))))
 
