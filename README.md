@@ -25,3 +25,7 @@ buffer are applied to the buffer-local kill rings, allowing you to kill from
 outside a broadcast buffer (or outside emacs) and yank into the broadcast 
 buffers.  Any changes to the kill ring made in the primary broadcast buffer 
 (that is, the one in the active window) are copied to the default kill ring.
+
+Known Limitations
+-------------
+Using the undo command in this mode is known to cause buffers to get out of sync.
