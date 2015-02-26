@@ -9,11 +9,9 @@ in one broadcast-mode buffer is replicated in the others.  If a broadcast mode
 buffer is not visible, (is not in a window), then it is excluded from broadcasts.
 This is to ensure that you don't change something without knowing it.  
 
-Broadcast behavior implemented by intercepting commands using `pre-command-hook'
-and `post-command-hook'.  Not all commands are broadcast.  It attempts to only
-broadcast commands that make sense.  The general strategy is to broadcast any
-command that modifies the state collected by `broadcast-get-state'.  We also 
-don't rebroadcast anything that modifies the window configuration.
+Broadcast behavior implemented by intercepting commands using `pre-command-hook`
+and `post-command-hook`.  Not all commands are broadcast.  It attempts to only
+broadcast commands that make sense.  
 
 The Kill Ring
 -------------
@@ -26,8 +24,8 @@ outside a broadcast buffer (or outside emacs) and yank into the broadcast
 buffers.  Any changes to the kill ring made in the primary broadcast buffer 
 (that is, the one in the active window) are copied to the default kill ring.
 
-Known Limitations
------------------
+Undo Boundaries
+---------------
 In order to synchronize undo behavior between linked buffers, an undo boundary
 is placed after every command.  This can mean undoing can take a little longer
 if you're going back very far.  
