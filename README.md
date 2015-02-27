@@ -6,28 +6,33 @@ editing.
 
 ![broadcast-mode demo](https://raw.githubusercontent.com/killdash9/broadcast-mode.el/master/demo.gif)
 
-When multiple buffers are in broadcast mode, anything done
-in one broadcast-mode buffer is replicated in the others.  If a broadcast mode
-buffer is not visible, (is not in a window), then it is excluded from broadcasts.
-This is to ensure that you don't change something without knowing it.  
+This is similar to the idea of multiple cursors, but takes place across
+multiple buffers.  To use it, place two or more buffers in broadcast-mode with
 
-Broadcast behavior implemented by intercepting commands using `pre-command-hook`
-and `post-command-hook`.  Not all commands are broadcast.  It attempts to only
-broadcast commands that make sense.  
+    M-x broadcast-mode
+
+This links those buffers together so that edits, cursor navigation,
+and even kill-ring operations made in one of the broadcast mode
+buffers are replicated in the other buffers.  If a broadcast-mode
+buffer is not visible, that is to say "buried," and not currenlty
+displayed by any window, then it is not affected by actions performed
+in other broadcast mode buffers.  Thus you can only edit what you can
+see.
 
 The Kill Ring
 -------------
-Each broadcast mode buffer has a local kill ring that interacts with the default 
-kill ring in a sensible manner.  Giving each buffer a local kill ring means you 
-can kill and yank as part of your editing, and text is yanked from the local 
-kill ring.  Any manipulations to the kill ring outside of a broadcast mode 
-buffer are applied to the buffer-local kill rings, allowing you to kill from 
-outside a broadcast buffer (or outside emacs) and yank into the broadcast 
-buffers.  Any changes to the kill ring made in the primary broadcast buffer 
-(that is, the one in the active window) are copied to the default kill ring.
+The kill rings in broadcast-mode buffers are independent, so each
+buffer can kill and yank independent text.  At the same time, kill ring
+operations are shared among buffers where it makes sense, allowing you
+to kill in a non-broadcast buffer and yank into a broadcast buffer and
+vice versa.  When killing in a broadcast buffer, the kill is replicated
+in other broadcast buffers, which may place something different on
+their kill rings.  The text that is killed in the primary broadcast
+buffer, (then one with focus), will also be placed on the main kill ring
+for non-broadcast buffers.
 
 Undo Boundaries
 ---------------
 In order to synchronize undo behavior between linked buffers, an undo boundary
 is placed after every command.  This can mean undoing can take a little longer
-if you're going back very far.  
+if you're going back very far.

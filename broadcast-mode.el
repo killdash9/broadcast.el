@@ -41,7 +41,7 @@
 ;; buffer can kill and yank independent text.  At the same time, kill ring
 ;; operations are shared among buffers where it makes sense, allowing you
 ;; to kill in a non-broadcast buffer and yank into a broadcast buffer and
-;; vise versa.  When killing in a broadcast buffer, the kill is replicated
+;; vice versa.  When killing in a broadcast buffer, the kill is replicated
 ;; in other broadcast buffers, which may place something different on
 ;; their kill rings.  The text that is killed in the primary broadcast
 ;; buffer, (then one with focus), will also be placed on the main kill ring
