@@ -2,7 +2,7 @@ broadcast-mode.el
 =================
 
 A minor mode for linking buffers together for simultaneous navigation and 
-editing.  
+editing.
 
 ![broadcast-mode demo](https://raw.githubusercontent.com/killdash9/broadcast-mode.el/master/demo.gif)
 
@@ -26,7 +26,7 @@ buffer can kill and yank independent text.  At the same time, kill ring
 operations are shared among buffers where it makes sense, allowing you
 to kill in a non-broadcast buffer and yank into a broadcast buffer and
 vice versa.  When killing in a broadcast buffer, each broadcast buffer
-may place something different on their kill rings.  The text that is killed
+may place something different on their kill ring.  The text that is killed
 in the primary broadcast buffer, (then one with focus), will also be placed
 on the main kill ring for non-broadcast buffers.
 
