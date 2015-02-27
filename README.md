@@ -4,6 +4,8 @@ broadcast-mode.el
 A minor mode for linking buffers together for simultaneous navigation and 
 editing.  
 
+![broadcast-mode demo](https://raw.githubusercontent.com/killdash9/broadcast-mode.el/master/demo.gif)
+
 When multiple buffers are in broadcast mode, anything done
 in one broadcast-mode buffer is replicated in the others.  If a broadcast mode
 buffer is not visible, (is not in a window), then it is excluded from broadcasts.
