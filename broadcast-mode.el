@@ -206,8 +206,9 @@ window configuration."
 repeat that function in all the broadcast-mode buffers since their kill-ring
 variable is buffer local"
   (if broadcast-suppress-advice
-      (apply orig-func args)    
-    (let* ((retval (apply orig-func args)))
+      (apply orig-func args)
+    (let* ((retval (apply orig-func args))
+           (broadcast-suppress-advice t))
       (if broadcast-mode                               ; if we're in broadcast mode
           (unless broadcast-suppress                   ; then repeat the operation 
             (with-temp-buffer (apply orig-func args))) ; with a global kill ring 
