@@ -5,7 +5,8 @@
 ;; Author: Russell Black (killdash9@github)
 ;; Keywords: convenience, frames, link, cursors
 ;; URL: https://github.com/killdash9/broadcast-mode.el
-;; Version 1.0
+;; Created: 9th December 2014
+;; Version: 1.0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -53,7 +54,6 @@
 ;; In order to synchronize undo behavior between linked buffers, an undo boundary
 ;; is placed after every command.  This can mean undoing can take a little longer
 ;; if you're going back very far.
-
 
 ;;; Code:
 
@@ -120,7 +120,8 @@ if you're going back very far.
 
     ;; unregister advice when there are no more broadcast buffers
     (when (= 0 (let ((count 0))
-                 (broadcast-foreach-broadcast-buffer (incf count)) count))
+                 (broadcast-foreach-broadcast-buffer
+                  (setq count (1+ count))) count))
       (advice-remove 'current-kill #'broadcast-current-kill-advice)
       (advice-remove 'kill-new     #'broadcast-kill-advice)
       (advice-remove 'kill-append  #'broadcast-kill-advice)
@@ -134,43 +135,44 @@ if you're going back very far.
 
 ;;; Variables
 (defvar broadcast-suppress nil
-  "Used to prevent recursive calling of command hooks")
+  "Used to prevent recursive calling of command hooks.")
 
 (defvar broadcast-state nil
-  "Holds a snapshot of relevant bits of buffer state in the pre-command-hook 
-`broadcast-pre'.  This is checked against the state in the post-command-hook 
-`broadcast-post'.  If the state matches, the buffer is considered not to have 
-changed significantly and the command is not broadcast to other visible
-broadcast-mode buffers.  Snapshots are compared using `equals'.  See 
-`broadcast-get-state'")
+  "Holds a snapshot of relevant bits of buffer state.
+It is set when the `pre-command-hook' `broadcast-pre' is called.  This is 
+checked against the state in the `post-command-hook' `broadcast-post'.  If the 
+state matches, the buffer is considered not to have changed significantly and 
+the command is not broadcast to other visible broadcast-mode buffers.  Snapshots
+are compared using `equals'.  See `broadcast-get-state'")
 
 (defvar broadcast-window-configuration nil
-  "Holds a snapshot of the current window configuration when the 
-pre-command-hook `broadcast-pre' is called.  It is checked against the current 
-window configuration in the post-command-hook `broadcast-post'.  If the window
-configurations do not match, the command is not broadcast to other 
-visible broadcast-mode buffers.")
+  "Holds a snapshot of the current window configuration.
+It is set when the `pre-command-hook' `broadcast-pre' is called.  It is checked 
+against the current window configuration in the `post-command-hook' 
+`broadcast-post'.  If the window configurations do not match, the command is not
+broadcast to other visible broadcast-mode buffers.")
 
 (defvar broadcast-transient-mark-mode nil
-  "Holds a snapshot of the value of the variable `transient-mark-mode' when 
-the pre-command-hook `broadcast-pre' is called.  Since its value may have 
-changed by the time the post-command-hook `broadcast-post' is called, the 
-`transient-mark-mode' variable is temporarily set via `let' to the snapshot 
-value for each of the other visible broadcast-mode buffers.")
+  "Holds a snapshot of the value of the variable `transient-mark-mode'.  
+It is set when the `pre-command-hook' `broadcast-pre' is called.  Since its 
+value may have changed by the time the `post-command-hook' `broadcast-post' 
+is called, the variable `transient-mark-mode' is temporarily set via `let' to 
+the snapshot value for each of the other visible broadcast-mode buffers.")
 
 (defvar broadcast-suppress-advice nil
-  "Ensures that nested advised calls don't do anything")
+  "Ensures that nested advised calls don't do anything.")
 
 (defun broadcast-get-state ()
-  "Collects relevant state about the buffer.  Used to detect if a command should
-be broadcast."
+  "Collects relevant state about the buffer.
+Used to detect if a command should be broadcast."
   (list (buffer-modified-tick) (point) (mark) mark-active transient-mark-mode
-        rectangle-mark-mode kill-ring kill-ring-yank-pointer))
+        (and (boundp 'rectangle-mark-mode ) rectangle-mark-mode)
+        kill-ring kill-ring-yank-pointer))
 
 ;;; Command Hooks
 (defun broadcast-pre ()
-  "A `pre-command-hook' that is enabled for all broadcast mode buffers.  It 
-collects buffer state that is considered in the `post-command-hook' 
+  "A `pre-command-hook' that is enabled for all broadcast mode buffers.
+It collects buffer state that is considered in the `post-command-hook' 
 `broadcast-post'"
   (unless broadcast-suppress
     (setq broadcast-window-configuration (current-window-configuration))
@@ -180,11 +182,11 @@ collects buffer state that is considered in the `post-command-hook'
     (undo-boundary))) 
 
 (defun broadcast-post ()
-  "A `post-command-hook' that broadcasts the command to other visible 
-broadcast-mode buffers.  Only certain commands are broadcast.  The general 
-strategy is to broadcast any command that modifies the state collected by 
-`broadcast-get-state'.  We also don't rebroadcast anything that modifies the 
-window configuration."
+  "Broadcasts the current command to other visible broaccast-mode buffers.
+This function is registered as a `post-command-hook'.  Only certain commands are
+broadcast.  The general strategy is to broadcast any command that modifies the 
+state collected by `broadcast-get-state'.  We also don't rebroadcast anything 
+that modifies the window configuration."
   (unless broadcast-suppress
     (let ((broadcast-suppress t))
       (when (or
@@ -218,7 +220,7 @@ window configuration."
 
 ;;; Advice functions
 (defun broadcast-current-kill-advice (n &optional do-not-move)
-  "Places interprogram pasting on all kill rings"
+  "Places interprogram pasting on all kill rings."
   (let ((interprogram-paste (and (= n 0)
                                  interprogram-paste-function
                                  (funcall interprogram-paste-function))))
@@ -241,9 +243,11 @@ window configuration."
            (kill-new interprogram-paste)))))))
 
 (defun broadcast-kill-advice (orig-func &rest args)
-  "When a kill ring manipulation happens in a non-broadcast-mode buffer,
-repeat that function in all the broadcast-mode buffers since their kill-ring
-variable is buffer local"
+  "Advice to coordinate kill across broadcast buffers.
+When a kill ring manipulation happens in a non-broadcast-mode buffer,
+repeat ORIG-FUNC with ARGS in all the broadcast-mode buffers since their 
+`kill-ring' variable is buffer local.  For kill ring manipulations that occur in
+a broadcast buffer, repeate ORIG-FUNC with ARGS with the global kill ring."
   (if broadcast-suppress-advice
       (apply orig-func args)
     (let ((retval (apply orig-func args))
@@ -257,13 +261,13 @@ variable is buffer local"
 
 ;;; Macros
 (defmacro broadcast-foreach-broadcast-buffer (body)
-  "Execute body for each broadcast buffer"
+  "Execute BODY for each broadcast buffer."
   `(mapcar
     (lambda (buffer) (with-current-buffer buffer (when broadcast-mode ,body)))
     (buffer-list)))
 
 (defmacro broadcast-command (body)
-  "Evaluates body in all other visible broadcast mode buffers."
+  "Evaluate BODY in all other visible broadcast mode buffers."
   `(let ((primary-buffer (current-buffer)))
      (mapcar
       (lambda (buffer)
@@ -273,3 +277,5 @@ variable is buffer local"
       (buffer-list))))
 
 (provide 'broadcast-mode)
+
+;;; broadcast-mode.el ends here
