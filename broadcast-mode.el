@@ -215,7 +215,7 @@ that modifies the window configuration."
                  (run-hooks 'post-command-hook))
              (error (message "%s in %s"
                              (error-message-string err)
-                             (buffer-name buffer)))
+                             (buffer-name)))
              (quit))))))))
 
 ;;; Advice functions
