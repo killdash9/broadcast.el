@@ -1,7 +1,7 @@
 broadcast.el
 =================
 
-Provides aminor mode for linking buffers together for simultaneous navigation
+Provides a minor mode for linking buffers together for simultaneous navigation
 and editing.
 
 ![broadcast-mode demo](https://raw.githubusercontent.com/killdash9/broadcast-mode.el/master/demo.gif)
