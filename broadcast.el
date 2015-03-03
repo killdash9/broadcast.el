@@ -1,12 +1,13 @@
-;;; broadcast-mode.el --- Links buffers together for editing.  
+;;; broadcast.el --- Links buffers together for editing.  
 
 ;; Copyright (C) 2014-2015 Russell Black
 
 ;; Author: Russell Black (killdash9@github)
 ;; Keywords: convenience, frames, link, cursors
-;; URL: https://github.com/killdash9/broadcast-mode.el
+;; URL: https://github.com/killdash9/broadcast.el
 ;; Created: 9th December 2014
-;; Version: 20150302
+;; Version: 20150303
+;; Package-Requires: ((emacs "24"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -277,6 +278,6 @@ a broadcast buffer, repeate ORIG-FUNC with ARGS with the global kill ring."
          (apply orig-func args)))                      ; broadcast buffer
       retval)))
 
-(provide 'broadcast-mode)
+(provide 'broadcast)
 
-;;; broadcast-mode.el ends here
+;;; broadcast.el ends here
