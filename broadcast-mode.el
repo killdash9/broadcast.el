@@ -6,7 +6,7 @@
 ;; Keywords: convenience, frames, link, cursors
 ;; URL: https://github.com/killdash9/broadcast-mode.el
 ;; Created: 9th December 2014
-;; Version: 1.0
+;; Version: 20150302
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
