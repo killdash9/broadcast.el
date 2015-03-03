@@ -57,6 +57,24 @@
 
 ;;; Code:
 
+;;; Macros
+;; defining macros first so that the byte compiler will do the right thing.
+(defmacro broadcast-foreach-broadcast-buffer (body)
+  "Execute BODY for each broadcast buffer."
+  `(mapcar
+    (lambda (buffer) (with-current-buffer buffer (when broadcast-mode ,body)))
+    (buffer-list)))
+
+(defmacro broadcast-command (body)
+  "Evaluate BODY in all other visible broadcast mode buffers."
+  `(let ((primary-buffer (current-buffer)))
+     (mapcar
+      (lambda (buffer)
+        (let ((window (get-buffer-window buffer)))
+          (when (and window (not (eq buffer primary-buffer)))
+            (with-selected-window window (when broadcast-mode ,body)))))
+      (buffer-list))))
+
 ;;; Minor mode
 ;;;###autoload
 (define-minor-mode broadcast-mode 
@@ -258,23 +276,6 @@ a broadcast buffer, repeate ORIG-FUNC with ARGS with the global kill ring."
         (broadcast-foreach-broadcast-buffer            ; else repeat it in each
          (apply orig-func args)))                      ; broadcast buffer
       retval)))
-
-;;; Macros
-(defmacro broadcast-foreach-broadcast-buffer (body)
-  "Execute BODY for each broadcast buffer."
-  `(mapcar
-    (lambda (buffer) (with-current-buffer buffer (when broadcast-mode ,body)))
-    (buffer-list)))
-
-(defmacro broadcast-command (body)
-  "Evaluate BODY in all other visible broadcast mode buffers."
-  `(let ((primary-buffer (current-buffer)))
-     (mapcar
-      (lambda (buffer)
-        (let ((window (get-buffer-window buffer)))
-          (when (and window (not (eq buffer primary-buffer)))
-            (with-selected-window window (when broadcast-mode ,body)))))
-      (buffer-list))))
 
 (provide 'broadcast-mode)
 
