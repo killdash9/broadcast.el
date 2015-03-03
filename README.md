@@ -1,8 +1,8 @@
-broadcast-mode.el
+broadcast.el
 =================
 
-A minor mode for linking buffers together for simultaneous navigation and 
-editing.
+Provides aminor mode for linking buffers together for simultaneous navigation
+and editing.
 
 ![broadcast-mode demo](https://raw.githubusercontent.com/killdash9/broadcast-mode.el/master/demo.gif)
 
