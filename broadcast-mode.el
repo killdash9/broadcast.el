@@ -61,14 +61,14 @@
 ;; defining macros first so that the byte compiler will do the right thing.
 (defmacro broadcast-foreach-broadcast-buffer (body)
   "Execute BODY for each broadcast buffer."
-  `(mapcar
+  `(mapc
     (lambda (buffer) (with-current-buffer buffer (when broadcast-mode ,body)))
     (buffer-list)))
 
 (defmacro broadcast-command (body)
   "Evaluate BODY in all other visible broadcast mode buffers."
   `(let ((primary-buffer (current-buffer)))
-     (mapcar
+     (mapc
       (lambda (buffer)
         (let ((window (get-buffer-window buffer)))
           (when (and window (not (eq buffer primary-buffer)))
