@@ -1,4 +1,4 @@
-;;; broadcast.el --- Links buffers together for editing.  
+;;; broadcast.el --- Links buffers together for simultaneous editing.
 
 ;; Copyright (C) 2014-2015 Russell Black
 
