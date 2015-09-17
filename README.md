@@ -7,7 +7,13 @@ and editing.
 ![broadcast-mode demo](https://raw.githubusercontent.com/killdash9/broadcast-mode.el/master/demo.gif)
 
 This is similar to the idea of multiple cursors, but takes place across
-multiple buffers.  To use it, place two or more buffers in broadcast-mode with
+multiple buffers.  
+
+To install from melpa:
+
+    M-x package-install RET broadcast-mode
+
+To use it, place two or more buffers in broadcast-mode with
 
     M-x broadcast-mode
 
