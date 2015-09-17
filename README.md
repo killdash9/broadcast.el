@@ -11,7 +11,7 @@ multiple buffers.
 
 To install from melpa:
 
-    M-x package-install RET broadcast-mode
+    M-x package-install RET broadcast
 
 To use it, place two or more buffers in broadcast-mode with
 
