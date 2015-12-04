@@ -34,7 +34,7 @@
 ;; This links those buffers together so that edits, cursor navigation,
 ;; and even kill-ring operations made in one of the broadcast mode
 ;; buffers are replicated in the other buffers.  If a broadcast-mode
-;; buffer is not visible, that is to say "buried," and not currenlty
+;; buffer is not visible, that is to say "buried," and not currently
 ;; displayed by any window, then it is not affected by actions performed
 ;; in other broadcast mode buffers.  Thus you can only edit what you can
 ;; see.
