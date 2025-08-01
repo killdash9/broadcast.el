@@ -211,6 +211,7 @@ that modifies the window configuration."
       (when (or
              ;; terminal support -- broadcast-get-state can't handle this situation
              (string-prefix-p "term-" (prin1-to-string this-command)) 
+             (string-prefix-p "vterm-" (prin1-to-string this-command)) 
              (and
               ;; don't broadcast in isearch mode.
               ;; It would be nice to support this but this is probably tricky
